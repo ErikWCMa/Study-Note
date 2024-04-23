@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h2>WebSocket Test</h2>
+    <div id="output"></div>
+    <input type="text" id="messageInput" placeholder="Enter message here...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script type="text/javascript">
+        var ws;
+
+        function init() {
+            // 创建一个 WebSocket 连接；需要确保这个地址与你的服务器地址匹配
+            ws = new WebSocket('ws://localhost:8080/echo');
+
+            ws.onopen = function() {
+                log('Connected');
+            };
+
+            ws.onmessage = function(evt) {
+                // 当收到消息时，在页面上显示
+                log('Received: ' + evt.data);
+            };
+
+            ws.onclose = function() {
+                // 连接关闭时，显示信息
+                log('Disconnected');
+            };
+
+            ws.onerror = function(err) {
+                // 出现错误时，显示信息
+                log('Error: ' + err);
+            };
+        }
+
+        function sendMessage() {
+            // 获取输入框中的消息，并发送
+            var message = document.getElementById('messageInput').value;
+            ws.send(message);
+            log('Sent: ' + message);
+        }
+
+        function log(message) {
+            // 在页面上显示日志信息
+            var output = document.getElementById('output');
+            output.innerHTML += message + '<br>';
+        }
+
+        // 当页面加载完毕时，初始化 WebSocket 连接
+        window.onload = init;
+    </script>
+</body>
+</html>
